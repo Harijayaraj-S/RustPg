@@ -1,0 +1,4 @@
+[package]
+name = "RustPg"
+version = "0.1.2"
+edition = "2021"
