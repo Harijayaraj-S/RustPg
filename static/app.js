@@ -21,10 +21,19 @@ async function fetchConfigs() {
     select.innerHTML = "";
 
     configs.forEach((cfg, index) => {
+        // Create Bootstrap list group item
         const li = document.createElement("li");
-        li.innerText = cfg.name + ": " + cfg.url;
+        li.className = "list-group-item list-group-item-dark d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+            <div>
+                <strong>${cfg.name}</strong>
+                <br>
+                <small class="text-muted">${cfg.url}</small>
+            </div>
+        `;
         list.appendChild(li);
 
+        // Add to dropdown
         const option = document.createElement("option");
         option.value = cfg.name;
         option.innerText = cfg.name;
@@ -32,16 +41,17 @@ async function fetchConfigs() {
     });
 }
 
+
 async function addConfig() {
     const url = document.getElementById("db-url").value;
     const name = document.getElementById("db-name").value;
     if (!name) {
-        showToast("❌ Please enter a database name", 3000);
+        showToast("❌ Please enter a database name");
         return;
     }
 
     if (!url) {
-        showToast("❌ Please enter a database URL", 3000);
+        showToast("❌ Please enter a database URL");
         return;
     }
 
@@ -63,7 +73,7 @@ async function addConfig() {
         showToast("✅ Database config added!");
     } catch (error) {
         console.error("Failed to add config:", error);
-        showToast("❌ Failed to add config", 4000);
+        showToast("❌ Failed to add config");
     }
 }
 
@@ -87,23 +97,27 @@ async function fetchHistory() {
 
     const list = document.getElementById("history-list");
     list.innerHTML = "";
-    history.forEach(h => {
+
+    history.forEach((h, index) => {
         const li = document.createElement("li");
-        li.innerText = `[${h.db_name}] ${h.query} → ${h.result}`;
+        li.className = "list-group-item list-group-item-dark";
+        li.innerHTML = `
+            <div class="mb-1"><strong>[${h.db_name}]</strong></div>
+            <div><code>${h.query}</code></div>
+            <div class="text-success small mt-1">→ ${h.result}</div>
+        `;
         list.appendChild(li);
     });
 }
 
-function showToast(message, duration = 3000) {
-    const toast = document.getElementById("toast");
-    toast.innerText = message;
-    toast.classList.add("show");
+function showToast(message) {
+    const toastMsg = document.getElementById("toast-msg");
+    toastMsg.innerText = message;
 
-    setTimeout(() => {
-        toast.classList.remove("show");
-    }, duration); // Make sure the duration is long enough to allow the transition
+    const toastEl = document.getElementById("liveToast");
+    const bsToast = new bootstrap.Toast(toastEl, { delay: 3000 });
+    bsToast.show();
 }
-
 
 
 fetchConfigs();
