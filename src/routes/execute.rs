@@ -1,19 +1,13 @@
-use std::any::Any;
-
-use crate::models::history::QueryHistory;
-use crate::utils::db::store_query_history;
-
 use axum::{extract::State, Json};
 use serde::Deserialize;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::Column;
-use sqlx::Row;
-use sqlx::SqlitePool;
-use sqlx::TypeInfo;
+use sqlx::{postgres::PgPoolOptions, Column, Row, SqlitePool, TypeInfo};
+
+use crate::models::history::QueryHistory;
+use crate::utils::db::{fetch_db_url, store_query_history};
 
 #[derive(Deserialize)]
 pub struct ExecuteInput {
-    pub db_url: String,
+    pub db_name: String,
     pub query: String,
 }
 
@@ -21,8 +15,9 @@ pub async fn execute_query(
     State(pool): State<SqlitePool>,
     Json(input): Json<ExecuteInput>,
 ) -> Json<Vec<serde_json::Value>> {
+    let db_url = fetch_db_url(&pool, &input.db_name).await;
     let pg_pool = PgPoolOptions::new()
-        .connect(&input.db_url)
+        .connect(&db_url)
         .await
         .expect("Failed to connect to Postgres");
 

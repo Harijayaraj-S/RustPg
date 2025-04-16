@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RustPg - SQL Executor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>RustPg - Query Executor</h1>
+
+  <section>
+    <h2>Database Config</h2>
+    <input type="text" id="db-url" placeholder="Postgres URL" />
+    <button onclick="addConfig()">Add Config</button>
+    <ul id="config-list"></ul>
+  </section>
+
+  <section>
+    <h2>Execute SQL Query</h2>
+    <select id="db-select"></select>
+    <textarea id="sql-input" placeholder="Write SQL here..."></textarea>
+    <button onclick="executeQuery()">Run</button>
+    <pre id="query-result"></pre>
+  </section>
+
+  <section>
+    <h2>Query History</h2>
+    <ul id="history-list"></ul>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

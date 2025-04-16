@@ -1,3 +1,4 @@
+use sqlx::Row;
 use sqlx::SqlitePool;
 
 use crate::models::{config::DbConfig, history::QueryHistory};
@@ -49,6 +50,15 @@ pub async fn fetch_db_configs(pool: &SqlitePool) -> Vec<DbConfig> {
         .fetch_all(pool)
         .await
         .unwrap()
+}
+
+pub async fn fetch_db_url(pool: &SqlitePool, name: &str) -> String {
+    sqlx::query("SELECT url FROM config WHERE name = $1")
+        .bind(name)
+        .fetch_one(pool)
+        .await
+        .unwrap()
+        .get::<String, _>("url")
 }
 
 pub async fn store_query_history(pool: &SqlitePool, history: &QueryHistory) {
